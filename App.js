@@ -1,20 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import DrawerNavigator from './navigation/DrawerNavigator';
+import LottieView from 'lottie-react-native';
+import { Provider } from 'react-redux';
+import configureStore from './redux-store/store';
+
+// Initialize the store
+const store = configureStore();
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+	const [splashShown, setSplashShown] = useState(true);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+	setTimeout(() => {
+		setSplashShown(false);
+	}, 2200);
+
+	return (
+		<Provider store={store}>
+			{splashShown && (
+				<LottieView
+					source={require('./assets/animations/splash.json')}
+					loop={false}
+					autoPlay
+					style={{
+						alignSelf: 'center',
+						justifyContent: 'center',
+						width: '40%',
+						height: '70%',
+					}}
+				/>
+			)}
+			{!splashShown && (
+				<NavigationContainer>
+					<DrawerNavigator />
+				</NavigationContainer>
+			)}
+		</Provider>
+	);
+}
